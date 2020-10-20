@@ -55,7 +55,10 @@ public class DatagramDnsResponseDecoder extends MessageToMessageDecoder<Datagram
 
     @Override
     protected void decode(ChannelHandlerContext ctx, DatagramPacket packet, List<Object> out) throws Exception {
-        out.add(decodeResponse(ctx, packet));
+        // If the content is not readable we should just drop it on the floor as there is nothing we can do with it.
+        if (packet.content().isReadable()) {
+            out.add(decodeResponse(ctx, packet));
+        }
     }
 
     protected DnsResponse decodeResponse(ChannelHandlerContext ctx, DatagramPacket packet) throws Exception {
